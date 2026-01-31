@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext.tsx';
@@ -46,12 +45,12 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex relative mx-4">
                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                  <span className="material-symbols-outlined text-gray-400 text-[20px]">search</span>
+                 <span className="material-symbols-outlined text-gray-400 text-[20px]">search</span>
                </span>
                <input 
-                  type="text" 
-                  className="bg-gray-100 rounded-full py-1.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all w-64"
-                  placeholder="Tìm kiếm sản phẩm..."
+                 type="text" 
+                 className="bg-gray-100 rounded-full py-1.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all w-64"
+                 placeholder="Tìm kiếm sản phẩm..."
                />
             </div>
 
@@ -66,10 +65,6 @@ const Navbar = () => {
 
             {isAuthenticated && user ? (
               <div className="relative group h-full flex items-center">
-                {/* 
-                  SỬA LỖI: Thêm vùng đệm (padding) thay vì mt-2 để chuột không rời khỏi vùng hover của group.
-                  Đồng thời dùng invisible/visible + opacity thay cho hidden để mượt hơn.
-                */}
                 <button className="flex items-center gap-2 focus:outline-none py-2 px-1">
                   <img className="h-8 w-8 rounded-full object-cover border border-gray-200" src={user.avatar} alt={user.name} />
                   <span className="hidden md:block text-sm font-medium text-gray-700">{user.name}</span>
@@ -105,8 +100,21 @@ const Navbar = () => {
                     <span className="material-symbols-outlined">menu</span>
                 </button>
             </div>
+          </div>
         </div>
       </div>
+
+      {isMenuOpen && (
+        <div className="sm:hidden bg-white border-t border-gray-200">
+          <div className="pt-2 pb-3 space-y-1">
+            <Link to="/" className="block pl-3 pr-4 py-2 border-l-4 border-primary text-base font-medium text-primary bg-indigo-50">Trang chủ</Link>
+            <Link to="/products" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">Sản phẩm</Link>
+            {user?.role === UserRole.ADMIN && (
+              <Link to="/admin" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">Quản trị</Link>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
