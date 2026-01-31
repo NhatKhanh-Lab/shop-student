@@ -18,7 +18,7 @@ export interface Address {
 
 // User Model (Matches DB: users table)
 export interface User {
-  id: number;
+  id: string; // Changed to string to match Firebase UID
   name: string;
   email: string;
   role: UserRole;
@@ -38,7 +38,7 @@ export interface Product {
   rating: number;
 }
 
-// Cart Item (Matches Logic: order_items table mostly)
+// Cart Item
 export interface CartItem extends Product {
   quantity: number;
 }
@@ -54,12 +54,16 @@ export enum OrderStatus {
 // Order Model (Matches DB: orders table)
 export interface Order {
   id: string;
-  userId: number;
+  userId: string;
   customerName: string;
   totalAmount: number;
   status: OrderStatus;
   date: string;
-  items: number; // Count of items
+  itemsCount: number;
+  items: CartItem[]; // Detailed list for history
+  paymentMethod: string;
+  trackingNumber: string;
+  shippingAddress: string;
 }
 
 // Toast Types

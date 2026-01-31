@@ -1,9 +1,10 @@
 import { Product, User, UserRole, Order, OrderStatus } from './types';
 
 // Mock Users
+// Fix: Use string IDs for users as defined in types.ts
 export const MOCK_USERS: User[] = [
-  { id: 1, name: 'Nguyễn Văn Admin', email: 'admin@shop.com', role: UserRole.ADMIN, avatar: 'https://i.pravatar.cc/150?u=admin' },
-  { id: 2, name: 'Trần Sinh Viên', email: 'user@shop.com', role: UserRole.USER, avatar: 'https://i.pravatar.cc/150?u=student' }
+  { id: '1', name: 'Nguyễn Văn Admin', email: 'admin@shop.com', role: UserRole.ADMIN, avatar: 'https://i.pravatar.cc/150?u=admin' },
+  { id: '2', name: 'Trần Sinh Viên', email: 'user@shop.com', role: UserRole.USER, avatar: 'https://i.pravatar.cc/150?u=student' }
 ];
 
 // Mock Products
@@ -91,10 +92,11 @@ export const MOCK_PRODUCTS: Product[] = [
 ];
 
 // Mock Orders
+// Fix: Ensure MOCK_ORDERS matches the Order interface structure and uses string IDs
 export const MOCK_ORDERS: Order[] = [
-  { id: 'ORD-001', userId: 2, customerName: 'Trần Sinh Viên', totalAmount: 26800000, status: OrderStatus.COMPLETED, date: '2023-10-01', items: 2 },
-  { id: 'ORD-002', userId: 2, customerName: 'Trần Sinh Viên', totalAmount: 450000, status: OrderStatus.SHIPPING, date: '2023-10-05', items: 1 },
-  { id: 'ORD-003', userId: 3, customerName: 'Lê Khách Hàng', totalAmount: 8500000, status: OrderStatus.PENDING, date: '2023-10-06', items: 1 },
-  { id: 'ORD-004', userId: 4, customerName: 'Phạm Người Dùng', totalAmount: 12000000, status: OrderStatus.CANCELLED, date: '2023-09-28', items: 1 },
-  { id: 'ORD-005', userId: 2, customerName: 'Trần Sinh Viên', totalAmount: 2200000, status: OrderStatus.PENDING, date: '2023-10-07', items: 1 },
+  { id: 'ORD-001', userId: '2', customerName: 'Trần Sinh Viên', totalAmount: 26800000, status: OrderStatus.COMPLETED, date: '2023-10-01', itemsCount: 2, items: [], paymentMethod: 'VNPAY', trackingNumber: 'VNP123456', shippingAddress: 'Hà Nội' },
+  { id: 'ORD-002', userId: '2', customerName: 'Trần Sinh Viên', totalAmount: 450000, status: OrderStatus.SHIPPING, date: '2023-10-05', itemsCount: 1, items: [], paymentMethod: 'COD', trackingNumber: 'COD987654', shippingAddress: 'Hồ Chí Minh' },
+  { id: 'ORD-003', userId: '3', customerName: 'Lê Khách Hàng', totalAmount: 8500000, status: OrderStatus.PENDING, date: '2023-10-06', itemsCount: 1, items: [], paymentMethod: 'VNPAY', trackingNumber: 'VNP112233', shippingAddress: 'Đà Nẵng' },
+  { id: 'ORD-004', userId: '4', customerName: 'Phạm Người Dùng', totalAmount: 12000000, status: OrderStatus.CANCELLED, date: '2023-09-28', itemsCount: 1, items: [], paymentMethod: 'COD', trackingNumber: 'CAN000000', shippingAddress: 'Hải Phòng' },
+  { id: 'ORD-005', userId: '2', customerName: 'Trần Sinh Viên', totalAmount: 2200000, status: OrderStatus.PENDING, date: '2023-10-07', itemsCount: 1, items: [], paymentMethod: 'COD', trackingNumber: 'COD445566', shippingAddress: 'Cần Thơ' },
 ];
