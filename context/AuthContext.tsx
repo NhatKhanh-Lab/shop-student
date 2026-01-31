@@ -1,7 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { User, UserRole } from '../types';
-import { MOCK_USERS } from '../data';
+import { User, UserRole, Address } from '../types';
 import { auth, db } from '../firebase';
 import { 
   onAuthStateChanged, 
@@ -10,13 +9,14 @@ import {
   signOut,
   updateProfile
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
 interface AuthContextType {
   user: User | null;
   login: (email: string, password?: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
+  saveAddress: (address: Address) => Promise<void>;
   isAuthenticated: boolean;
   isAdmin: boolean;
   loading: boolean;
@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Lấy profile từ Firestore
         let userData: User | null = null;
         if (db) {
           const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
@@ -45,7 +44,6 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
           }
         }
 
-        // Nếu không có trong Firestore (hoặc db lỗi), dùng dữ liệu từ Auth + MOCK logic cho Admin
         if (!userData) {
           const isAdminEmail = firebaseUser.email === 'admin@shop.com';
           userData = {
@@ -53,7 +51,8 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
             name: firebaseUser.displayName || 'Người dùng',
             email: firebaseUser.email || '',
             role: isAdminEmail ? UserRole.ADMIN : UserRole.USER,
-            avatar: firebaseUser.photoURL || `https://i.pravatar.cc/150?u=${firebaseUser.uid}`
+            avatar: firebaseUser.photoURL || `https://i.pravatar.cc/150?u=${firebaseUser.uid}`,
+            savedAddresses: []
           };
         }
         setUser(userData);
@@ -82,13 +81,26 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
       name,
       email,
       role: email === 'admin@shop.com' ? UserRole.ADMIN : UserRole.USER,
-      avatar: `https://i.pravatar.cc/150?u=${firebaseUser.uid}`
+      avatar: `https://i.pravatar.cc/150?u=${firebaseUser.uid}`,
+      savedAddresses: []
     };
 
     if (db) {
       await setDoc(doc(db, "users", firebaseUser.uid), newUser);
     }
     setUser(newUser);
+  };
+
+  const saveAddress = async (address: Address) => {
+    if (!user || !db) return;
+    const userRef = doc(db, "users", user.id.toString());
+    await updateDoc(userRef, {
+      savedAddresses: arrayUnion(address)
+    });
+    setUser(prev => prev ? {
+      ...prev,
+      savedAddresses: [...(prev.savedAddresses || []), address]
+    } : null);
   };
 
   const logout = async () => {
@@ -101,7 +113,8 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
       user, 
       login, 
       register,
-      logout, 
+      logout,
+      saveAddress,
       isAuthenticated: !!user,
       isAdmin: user?.role === UserRole.ADMIN,
       loading

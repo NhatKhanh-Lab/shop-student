@@ -6,6 +6,16 @@ export enum UserRole {
   ADMIN = 'admin'
 }
 
+// Address Model
+export interface Address {
+  id: string;
+  fullName: string;
+  phone: string;
+  address: string;
+  city: string;
+  isDefault?: boolean;
+}
+
 // User Model (Matches DB: users table)
 export interface User {
   id: number;
@@ -13,6 +23,7 @@ export interface User {
   email: string;
   role: UserRole;
   avatar?: string;
+  savedAddresses?: Address[];
 }
 
 // Product Model (Matches DB: products table)
