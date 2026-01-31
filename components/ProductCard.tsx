@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
+/* Import Link from react-router-dom to fix missing exported member error */
 import { Link } from 'react-router-dom';
 
 interface ProductCardProps {

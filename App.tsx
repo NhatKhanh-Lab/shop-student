@@ -1,38 +1,42 @@
 import React from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { CartProvider } from './context/CartContext';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import Layout from './components/Layout';
-import Home from './pages/Home';
-import ProductList from './pages/ProductList';
-import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
-import Login from './pages/Login';
-import AdminDashboard from './pages/AdminDashboard';
-import Checkout from './pages/Checkout';
-import PaymentSuccess from './pages/PaymentSuccess';
-import OrderHistory from './pages/OrderHistory';
-import UserProfile from './pages/UserProfile';
-import { UserRole } from './types';
+import { CartProvider } from './context/CartContext.tsx';
+import { AuthProvider, useAuth } from './context/AuthContext.tsx';
+import Layout from './components/Layout.tsx';
+import Home from './pages/Home.tsx';
+import ProductList from './pages/ProductList.tsx';
+import ProductDetail from './pages/ProductDetail.tsx';
+import Cart from './pages/Cart.tsx';
+import Login from './pages/Login.tsx';
+import AdminDashboard from './pages/AdminDashboard.tsx';
+import Checkout from './pages/Checkout.tsx';
+import PaymentSuccess from './pages/PaymentSuccess.tsx';
+import OrderHistory from './pages/OrderHistory.tsx';
+import UserProfile from './pages/UserProfile.tsx';
+import AIChatbot from './components/AIChatbot.tsx';
+import { UserRole } from './types.ts';
 
 // Protected Route for Admin
-const ProtectedRoute = ({ children, role }: { children: React.ReactNode, role: UserRole }) => {
-  const { user, isAuthenticated } = useAuth();
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, isAuthenticated, loading } = useAuth();
+  
+  if (loading) return <div className="min-h-screen flex items-center justify-center">Đang kiểm tra quyền truy cập...</div>;
   
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  if (role === UserRole.ADMIN && user?.role !== UserRole.ADMIN) {
+  if (user?.role !== UserRole.ADMIN) {
     return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
 };
 
-// Protected Route for Authenticated Users
-const UserRoute = ({ children }: { children: React.ReactNode }) => {
-    const { isAuthenticated } = useAuth();
+// Protected Route for Users
+const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+    const { isAuthenticated, loading } = useAuth();
+    if (loading) return <div className="min-h-screen flex items-center justify-center">Đang tải...</div>;
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
     }
@@ -50,30 +54,26 @@ const App = () => {
               <Route path="products" element={<ProductList />} />
               <Route path="product/:id" element={<ProductDetail />} />
               <Route path="cart" element={<Cart />} />
-              <Route path="checkout" element={<Checkout />} />
-              <Route path="payment-success" element={<PaymentSuccess />} />
+              <Route path="login" element={<Login />} />
               
-              {/* User Routes */}
-              <Route path="history" element={
-                  <UserRoute>
-                      <OrderHistory />
-                  </UserRoute>
-              } />
-              <Route path="profile" element={
-                  <UserRoute>
-                      <UserProfile />
-                  </UserRoute>
-              } />
+              {/* Private Routes */}
+              <Route path="checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
+              <Route path="payment-success" element={<PrivateRoute><PaymentSuccess /></PrivateRoute>} />
+              <Route path="history" element={<PrivateRoute><OrderHistory /></PrivateRoute>} />
+              <Route path="profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+              
+              {/* Admin Routes */}
+              <Route 
+                path="admin" 
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
             </Route>
-            
-            <Route path="/login" element={<Login />} />
-            
-            <Route path="/admin" element={
-              <ProtectedRoute role={UserRole.ADMIN}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
           </Routes>
+          <AIChatbot />
         </HashRouter>
       </CartProvider>
     </AuthProvider>

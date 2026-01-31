@@ -1,5 +1,7 @@
+
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+/* Import hooks from react-router to resolve missing exported member errors */
+import { useParams, useNavigate } from 'react-router';
 import { MOCK_PRODUCTS } from '../data';
 import { useCart } from '../context/CartContext';
 

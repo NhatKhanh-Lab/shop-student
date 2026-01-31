@@ -1,9 +1,11 @@
+
 import React, { useState } from 'react';
 import { MOCK_ORDERS, MOCK_PRODUCTS, MOCK_USERS } from '../data';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { OrderStatus, Product, User, UserRole, Order } from '../types';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+/* Import useNavigate from react-router to fix missing exported member error */
+import { useNavigate } from 'react-router';
 
 // Mock chart data
 const REVENUE_DATA = [

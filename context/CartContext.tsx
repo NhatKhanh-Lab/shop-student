@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 import { Product, CartItem } from '../types';
 
@@ -13,7 +14,8 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
+// Make children optional to avoid JSX type errors in some environments
+export const CartProvider = ({ children }: { children?: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const addToCart = (product: Product) => {

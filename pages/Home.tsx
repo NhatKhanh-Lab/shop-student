@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { MOCK_PRODUCTS } from '../data';
 import ProductCard from '../components/ProductCard';
+/* Import Link from react-router-dom to fix missing exported member error */
 import { Link } from 'react-router-dom';
 
 const Home = () => {

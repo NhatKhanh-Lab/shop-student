@@ -1,6 +1,9 @@
+
 import React from 'react';
 import { useCart } from '../context/CartContext';
-import { Link, useNavigate } from 'react-router-dom';
+/* Import Link from react-router-dom and useNavigate from react-router to fix missing exported member errors */
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();

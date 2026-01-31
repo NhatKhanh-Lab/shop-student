@@ -1,7 +1,15 @@
+
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { User, UserRole } from '../types';
 import { MOCK_USERS } from '../data';
 import { auth, db } from '../firebase';
+import { 
+  onAuthStateChanged, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut,
+  updateProfile
+} from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 interface AuthContextType {
@@ -16,48 +24,75 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({ children }: { children?: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Lắng nghe trạng thái đăng nhập từ Firebase
   useEffect(() => {
-      // Firebase Auth is disabled/removed, just finish loading
+    if (!auth) {
       setLoading(false);
+      return;
+    }
+
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Lấy profile từ Firestore
+        let userData: User | null = null;
+        if (db) {
+          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+          if (userDoc.exists()) {
+            userData = userDoc.data() as User;
+          }
+        }
+
+        // Nếu không có trong Firestore (hoặc db lỗi), dùng dữ liệu từ Auth + MOCK logic cho Admin
+        if (!userData) {
+          const isAdminEmail = firebaseUser.email === 'admin@shop.com';
+          userData = {
+            id: firebaseUser.uid as any,
+            name: firebaseUser.displayName || 'Người dùng',
+            email: firebaseUser.email || '',
+            role: isAdminEmail ? UserRole.ADMIN : UserRole.USER,
+            avatar: firebaseUser.photoURL || `https://i.pravatar.cc/150?u=${firebaseUser.uid}`
+          };
+        }
+        setUser(userData);
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const login = async (email: string, password?: string) => {
-    // Always use Mock Login since auth is null
-    console.warn("Using Mock Login (Firebase Auth disabled)");
-    const mockUser = MOCK_USERS.find(u => u.email === email) || MOCK_USERS[1];
-    setUser(mockUser);
+    if (!auth) throw new Error("Firebase Auth chưa được khởi tạo");
+    await signInWithEmailAndPassword(auth, email, password || '');
   };
 
   const register = async (email: string, password: string, name: string) => {
-      // Mock Registration
-      console.warn("Using Mock Registration");
-      const mockId = Date.now();
-      const newUser: any = {
-          id: mockId,
-          name: name,
-          email: email,
-          role: UserRole.USER, // Mặc định là User
-          avatar: `https://i.pravatar.cc/150?u=${mockId}`
-      };
-      
-      // Try to save to firestore if db is available
-      if (db) {
-        try {
-            await setDoc(doc(db, "users", mockId.toString()), newUser);
-        } catch (e) {
-            console.error("Error saving mock user to firestore:", e);
-        }
-      }
-      
-      setUser(newUser);
+    if (!auth) throw new Error("Firebase Auth chưa được khởi tạo");
+    const { user: firebaseUser } = await createUserWithEmailAndPassword(auth, email, password);
+    
+    await updateProfile(firebaseUser, { displayName: name });
+
+    const newUser: User = {
+      id: firebaseUser.uid as any,
+      name,
+      email,
+      role: email === 'admin@shop.com' ? UserRole.ADMIN : UserRole.USER,
+      avatar: `https://i.pravatar.cc/150?u=${firebaseUser.uid}`
+    };
+
+    if (db) {
+      await setDoc(doc(db, "users", firebaseUser.uid), newUser);
+    }
+    setUser(newUser);
   };
 
   const logout = async () => {
+    if (auth) await signOut(auth);
     setUser(null);
   };
 

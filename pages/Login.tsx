@@ -1,17 +1,17 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { UserRole } from '../types';
-import { useNavigate, Link } from 'react-router-dom';
+/* Split Link from react-router-dom and useNavigate from react-router to fix missing exported member errors */
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 const Login = () => {
   const { login, register } = useAuth();
   const navigate = useNavigate();
   
-  // State to toggle between Login and Register
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Form states
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -25,7 +25,6 @@ const Login = () => {
 
     try {
         if (isRegistering) {
-            // Registration Logic
             if (password !== confirmPassword) {
                 throw new Error('Mật khẩu xác nhận không khớp.');
             }
@@ -36,18 +35,13 @@ const Login = () => {
             await register(email, password, name);
             navigate('/');
         } else {
-            // Login Logic
             await login(email, password);
-            // Check role is handled in AuthContext, just navigate based on result or let context update redirect
-            // For simplicity, we navigate to home, and ProtectedRoute will kick admin out if needed, 
-            // but let's just go home.
             navigate('/');
         }
     } catch (err: any) {
         console.error(err);
-        // Map firebase errors to Vietnamese friendly messages
         let msg = err.message;
-        if (msg.includes('auth/invalid-credential') || msg.includes('auth/user-not-found') || msg.includes('auth/wrong-password')) {
+        if (msg.includes('auth/invalid-credential') || msg.includes('auth/user-not-found') || msg.includes('auth/wrong-password') || msg.includes('auth/invalid-email')) {
             msg = 'Email hoặc mật khẩu không chính xác.';
         } else if (msg.includes('auth/email-already-in-use')) {
             msg = 'Email này đã được sử dụng.';
@@ -67,7 +61,6 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
-      {/* Back to Home Button */}
       <div className="absolute top-6 left-6">
           <Link to="/" className="flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium">
               <span className="material-symbols-outlined">arrow_back</span>
@@ -96,7 +89,6 @@ const Login = () => {
         <div className="bg-white py-8 px-4 shadow-xl sm:rounded-2xl sm:px-10 border border-gray-100">
           <form className="space-y-6" onSubmit={handleSubmit}>
             
-            {/* Show Name field only when registering */}
             {isRegistering && (
                 <div className="animate-fade-in">
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -153,7 +145,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Show Confirm Password field only when registering */}
             {isRegistering && (
                 <div className="animate-fade-in">
                   <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
@@ -197,31 +188,6 @@ const Login = () => {
               </button>
             </div>
           </form>
-
-          {/* Quick Demo Info */}
-          {!isRegistering && (
-              <div className="mt-6">
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300" />
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">Thông tin demo (Nếu chưa nhập Firebase Key)</span>
-                  </div>
-                </div>
-
-                <div className="mt-6 grid grid-cols-2 gap-3">
-                   <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100 cursor-pointer hover:bg-blue-50 hover:border-blue-200 transition-colors" onClick={() => {setEmail('user@shop.com'); setPassword('123456')}}>
-                      <span className="font-bold block text-gray-700 mb-1">USER</span>
-                      user@shop.com
-                   </div>
-                   <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100 cursor-pointer hover:bg-blue-50 hover:border-blue-200 transition-colors" onClick={() => {setEmail('admin@shop.com'); setPassword('123456')}}>
-                      <span className="font-bold block text-gray-700 mb-1">ADMIN</span>
-                      admin@shop.com
-                   </div>
-                </div>
-              </div>
-          )}
         </div>
       </div>
     </div>

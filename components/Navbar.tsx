@@ -1,24 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
-import { UserRole } from '../types';
+import { useCart } from '../context/CartContext.tsx';
+import { useAuth } from '../context/AuthContext.tsx';
+import { UserRole } from '../types.ts';
 
 const Navbar = () => {
   const { cartCount } = useCart();
-  const { user, isAuthenticated, logout, login } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/');
-  };
-
-  // Demo helper to quickly switch accounts
-  const handleQuickLogin = (role: UserRole) => {
-    login("demo", role);
-    navigate(role === UserRole.ADMIN ? '/admin' : '/');
   };
 
   return (
@@ -46,7 +40,6 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Search - Hidden on mobile for simplicity */}
             <div className="hidden lg:flex relative mx-4">
                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                   <span className="material-symbols-outlined text-gray-400 text-[20px]">search</span>
@@ -73,7 +66,6 @@ const Navbar = () => {
                   <img className="h-8 w-8 rounded-full object-cover border border-gray-200" src={user.avatar} alt={user.name} />
                   <span className="hidden md:block text-sm font-medium text-gray-700">{user.name}</span>
                 </button>
-                {/* Dropdown */}
                 <div className="absolute right-0 w-48 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 hidden group-hover:block transition-all duration-200">
                   <div className="py-1">
                     <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hồ sơ</Link>
@@ -84,13 +76,10 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                 <Link to="/login" className="text-sm font-medium text-gray-500 hover:text-gray-900">Đăng nhập</Link>
-                 <button onClick={() => handleQuickLogin(UserRole.USER)} className="hidden md:block text-xs bg-gray-100 px-2 py-1 rounded text-gray-600 hover:bg-gray-200">User Demo</button>
-                 <button onClick={() => handleQuickLogin(UserRole.ADMIN)} className="hidden md:block text-xs bg-blue-100 px-2 py-1 rounded text-blue-600 hover:bg-blue-200">Admin Demo</button>
+                 <Link to="/login" className="px-4 py-2 text-sm font-bold text-white bg-primary rounded-full hover:bg-blue-700 transition-all">Đăng nhập</Link>
               </div>
             )}
             
-            {/* Mobile menu button */}
             <div className="flex items-center sm:hidden">
                 <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-gray-500">
                     <span className="material-symbols-outlined">menu</span>
@@ -100,7 +89,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
           <div className="sm:hidden bg-white border-t border-gray-200">
               <div className="pt-2 pb-3 space-y-1">
