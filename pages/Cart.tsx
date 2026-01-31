@@ -1,16 +1,30 @@
 
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 /* Import Link from react-router-dom and useNavigate from react-router to fix missing exported member errors */
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const handleCheckout = () => {
       navigate('/checkout');
+  };
+
+  const handleRemove = (id: number, name: string) => {
+      removeFromCart(id);
+      showToast('warning', 'Giỏ hàng', `Đã xóa ${name} khỏi giỏ hàng.`);
+  };
+
+  const handleClear = () => {
+      if (window.confirm('Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?')) {
+          clearCart();
+          showToast('info', 'Giỏ hàng', 'Giỏ hàng đã được làm trống.');
+      }
   };
 
   if (cartItems.length === 0) {
@@ -46,7 +60,7 @@ const Cart = () => {
           <section className="lg:col-span-8 bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
              <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
                 <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Chi tiết sản phẩm</span>
-                <button onClick={clearCart} className="text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-1 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors">
+                <button onClick={handleClear} className="text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-1 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors">
                     <span className="material-symbols-outlined text-sm">delete_sweep</span> Xóa tất cả
                 </button>
              </div>
@@ -95,7 +109,7 @@ const Cart = () => {
                         </div>
                         
                         <button
-                          onClick={() => removeFromCart(item.id)}
+                          onClick={() => handleRemove(item.id, item.name)}
                           type="button"
                           className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
                           title="Xóa sản phẩm"
@@ -167,17 +181,6 @@ const Cart = () => {
                      <img src="https://vinadesign.vn/uploads/images/2023/05/vnpay-logo-vinadesign-25-12-57-55.png" className="h-5 object-contain" alt="vnpay"/>
                 </div>
               </div>
-            </div>
-            
-            {/* Trust badge */}
-            <div className="bg-blue-50/50 rounded-2xl p-4 border border-blue-100 flex items-start gap-3 backdrop-blur-sm">
-                <div className="p-2 bg-white rounded-lg shadow-sm text-primary">
-                    <span className="material-symbols-outlined">verified_user</span>
-                </div>
-                <div>
-                    <h4 className="text-sm font-bold text-gray-900">Bảo mật tuyệt đối</h4>
-                    <p className="text-xs text-gray-600 mt-1 leading-relaxed">Thông tin thanh toán của bạn được mã hóa an toàn SSL 256-bit.</p>
-                </div>
             </div>
           </section>
         </div>

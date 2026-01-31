@@ -4,8 +4,8 @@ import { MOCK_ORDERS, MOCK_PRODUCTS, MOCK_USERS } from '../data';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { OrderStatus, Product, User, UserRole, Order } from '../types';
 import { useAuth } from '../context/AuthContext';
-/* Import useNavigate from react-router to fix missing exported member error */
-import { useNavigate } from 'react-router';
+import { useToast } from '../context/ToastContext';
+import { useNavigate } from 'react-router-dom';
 
 // Mock chart data
 const REVENUE_DATA = [
@@ -21,6 +21,7 @@ const REVENUE_DATA = [
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'users'>('overview');
   const { logout, user } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   // --- STATE MANAGEMENT ---
@@ -42,6 +43,7 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
       logout();
+      showToast('info', 'Admin', 'Đã thoát phiên làm việc quản trị.');
       navigate('/login');
   };
 
@@ -68,6 +70,7 @@ const AdminDashboard = () => {
       e.preventDefault();
       if (editingProduct) {
           setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...prodForm, rating: p.rating } : p));
+          showToast('success', 'Kho hàng', `Đã cập nhật sản phẩm: ${prodForm.name}`);
       } else {
           const newProduct: Product = {
               id: Date.now(),
@@ -75,6 +78,7 @@ const AdminDashboard = () => {
               rating: 5.0
           };
           setProducts([newProduct, ...products]);
+          showToast('success', 'Kho hàng', `Đã thêm sản phẩm mới: ${prodForm.name}`);
       }
       setIsProductModalOpen(false);
   };
@@ -82,17 +86,20 @@ const AdminDashboard = () => {
   const handleDeleteProduct = (id: number) => {
       if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
           setProducts(products.filter(p => p.id !== id));
+          showToast('warning', 'Kho hàng', 'Đã xóa sản phẩm khỏi hệ thống.');
       }
   };
 
   // --- ORDER ACTIONS ---
   const handleUpdateOrderStatus = (orderId: string, newStatus: OrderStatus) => {
       setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+      showToast('info', 'Đơn hàng', `Đã chuyển trạng thái đơn #${orderId} sang ${newStatus}`);
   };
 
   const handleDeleteOrder = (orderId: string) => {
       if (window.confirm('Xóa lịch sử đơn hàng này?')) {
           setOrders(orders.filter(o => o.id !== orderId));
+          showToast('warning', 'Đơn hàng', 'Đã xóa đơn hàng khỏi danh sách.');
       }
   };
 
@@ -104,18 +111,21 @@ const AdminDashboard = () => {
   // --- USER ACTIONS ---
   const handleDeleteUser = (userId: number) => {
       if (userId === user?.id) {
-          alert("Không thể tự xóa tài khoản admin đang đăng nhập!");
+          showToast('error', 'Lỗi', 'Không thể tự xóa tài khoản admin đang đăng nhập!');
           return;
       }
       if (window.confirm('Xóa người dùng này khỏi hệ thống?')) {
           setUsers(users.filter(u => u.id !== userId));
+          showToast('warning', 'Người dùng', 'Đã xóa tài khoản người dùng.');
       }
   };
 
   const handleToggleRole = (userId: number) => {
       setUsers(users.map(u => {
           if (u.id === userId) {
-              return { ...u, role: u.role === UserRole.ADMIN ? UserRole.USER : UserRole.ADMIN };
+              const newRole = u.role === UserRole.ADMIN ? UserRole.USER : UserRole.ADMIN;
+              showToast('info', 'Quyền hạn', `Đã đổi ${u.name} sang quyền ${newRole}`);
+              return { ...u, role: newRole };
           }
           return u;
       }));

@@ -1,3 +1,4 @@
+
 // Enum for User Roles
 export enum UserRole {
   GUEST = 'guest',
@@ -48,4 +49,14 @@ export interface Order {
   status: OrderStatus;
   date: string;
   items: number; // Count of items
+}
+
+// Toast Types
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
+
+export interface ToastMessage {
+  id: string;
+  type: ToastType;
+  title: string;
+  message: string;
 }

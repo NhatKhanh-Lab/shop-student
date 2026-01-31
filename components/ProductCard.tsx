@@ -2,7 +2,7 @@
 import React from 'react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
-/* Import Link from react-router-dom to fix missing exported member error */
+import { useToast } from '../context/ToastContext';
 import { Link } from 'react-router-dom';
 
 interface ProductCardProps {
@@ -11,10 +11,13 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
+  const { showToast } = useToast();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     addToCart(product);
+    showToast('success', 'Giỏ hàng', `Đã thêm ${product.name} vào giỏ hàng.`);
   };
 
   return (

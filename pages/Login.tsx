@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-/* Split Link from react-router-dom and useNavigate from react-router to fix missing exported member errors */
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router';
+import { useToast } from '../context/ToastContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const { login, register } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   
   const [isRegistering, setIsRegistering] = useState(false);
@@ -33,9 +33,11 @@ const Login = () => {
             }
             
             await register(email, password, name);
+            showToast('success', 'Thành công', `Chào mừng ${name} đã gia nhập ShopStudent!`);
             navigate('/');
         } else {
             await login(email, password);
+            showToast('success', 'Đăng nhập', 'Chào mừng bạn đã quay trở lại!');
             navigate('/');
         }
     } catch (err: any) {
@@ -47,6 +49,7 @@ const Login = () => {
             msg = 'Email này đã được sử dụng.';
         }
         setError(msg);
+        showToast('error', 'Thất bại', msg);
     } finally {
         setIsLoading(false);
     }

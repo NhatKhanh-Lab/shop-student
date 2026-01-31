@@ -1,17 +1,21 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext.tsx';
 import { useAuth } from '../context/AuthContext.tsx';
+import { useToast } from '../context/ToastContext.tsx';
 import { UserRole } from '../types.ts';
 
 const Navbar = () => {
   const { cartCount } = useCart();
   const { user, isAuthenticated, logout } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
+    showToast('info', 'Đăng xuất', 'Bạn đã đăng xuất khỏi hệ thống.');
     navigate('/');
   };
 
@@ -61,22 +65,38 @@ const Navbar = () => {
             </Link>
 
             {isAuthenticated && user ? (
-              <div className="relative group">
-                <button className="flex items-center gap-2 focus:outline-none">
+              <div className="relative group h-full flex items-center">
+                {/* 
+                  SỬA LỖI: Thêm vùng đệm (padding) thay vì mt-2 để chuột không rời khỏi vùng hover của group.
+                  Đồng thời dùng invisible/visible + opacity thay cho hidden để mượt hơn.
+                */}
+                <button className="flex items-center gap-2 focus:outline-none py-2 px-1">
                   <img className="h-8 w-8 rounded-full object-cover border border-gray-200" src={user.avatar} alt={user.name} />
                   <span className="hidden md:block text-sm font-medium text-gray-700">{user.name}</span>
+                  <span className="material-symbols-outlined text-[18px] text-gray-400 group-hover:rotate-180 transition-transform">expand_more</span>
                 </button>
-                <div className="absolute right-0 w-48 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 hidden group-hover:block transition-all duration-200">
-                  <div className="py-1">
-                    <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hồ sơ</Link>
-                    <Link to="/history" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Đơn mua</Link>
-                    <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Đăng xuất</button>
+                
+                <div className="absolute right-0 top-full w-48 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 origin-top-right z-[100]">
+                  <div className="py-2">
+                    <div className="px-4 py-2 border-b border-gray-50 mb-1">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tài khoản</p>
+                    </div>
+                    <Link to="/profile" className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+                        <span className="material-symbols-outlined text-[20px]">person</span> Hồ sơ
+                    </Link>
+                    <Link to="/history" className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+                        <span className="material-symbols-outlined text-[20px]">receipt_long</span> Đơn mua
+                    </Link>
+                    <div className="h-px bg-gray-50 my-1"></div>
+                    <button onClick={handleLogout} className="flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                        <span className="material-symbols-outlined text-[20px]">logout</span> Đăng xuất
+                    </button>
                   </div>
                 </div>
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                 <Link to="/login" className="px-4 py-2 text-sm font-bold text-white bg-primary rounded-full hover:bg-blue-700 transition-all">Đăng nhập</Link>
+                 <Link to="/login" className="px-5 py-2 text-sm font-bold text-white bg-primary rounded-full hover:bg-blue-700 transition-all shadow-md active:scale-95">Đăng nhập</Link>
               </div>
             )}
             
@@ -85,21 +105,8 @@ const Navbar = () => {
                     <span className="material-symbols-outlined">menu</span>
                 </button>
             </div>
-          </div>
         </div>
       </div>
-
-      {isMenuOpen && (
-          <div className="sm:hidden bg-white border-t border-gray-200">
-              <div className="pt-2 pb-3 space-y-1">
-                  <Link to="/" className="block pl-3 pr-4 py-2 border-l-4 border-primary text-base font-medium text-primary bg-indigo-50">Trang chủ</Link>
-                  <Link to="/products" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">Sản phẩm</Link>
-                  {user?.role === UserRole.ADMIN && (
-                       <Link to="/admin" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">Quản trị</Link>
-                  )}
-              </div>
-          </div>
-      )}
     </nav>
   );
 };

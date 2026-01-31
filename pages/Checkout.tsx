@@ -1,9 +1,12 @@
+
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import { useNavigate, Navigate } from 'react-router-dom';
 
 const Checkout = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -29,21 +32,19 @@ const Checkout = () => {
 
   const handlePayment = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.fullName || !formData.phone || !formData.address) {
+        showToast('error', 'Lỗi thông tin', 'Vui lòng điền đầy đủ các thông tin giao hàng.');
+        return;
+    }
+
     setLoading(true);
+    showToast('info', 'Đang xử lý', 'Hệ thống đang chuẩn bị cổng thanh toán...');
 
     if (formData.paymentMethod === 'vnpay') {
-        // SIMULATION OF VNPAY REDIRECT
-        // In a real app, you would call your backend API here:
-        // const res = await axios.post('/api/payment/create_payment_url', { amount: cartTotal, ... });
-        // window.location.href = res.data.url;
-
-        // Simulate network delay
         setTimeout(() => {
-            // Fake VNPAY URL construction for demo (Display only)
-            const vnp_Url = `https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=${cartTotal * 100}&vnp_Command=pay&vnp_CreateDate=${new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14)}&vnp_CurrCode=VND&vnp_IpAddr=127.0.0.1&vnp_Locale=vn&vnp_OrderInfo=Thanh+toan+don+hang+demo&vnp_OrderType=other&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A3000%2Fpayment-success&vnp_TmnCode=DEMO&vnp_TxnRef=${Date.now()}&vnp_Version=2.1.0`;
-            
-            // Redirect to our success page simulating a successful callback from VNPAY
             clearCart();
+            showToast('success', 'Thanh toán', 'Thanh toán qua VNPAY thành công!');
             navigate('/payment-success', { 
                 state: { 
                     orderId: `ORD-${Date.now()}`, 
@@ -51,11 +52,11 @@ const Checkout = () => {
                     method: 'VNPAY Sandbox' 
                 } 
             });
-        }, 2000);
+        }, 2500);
     } else {
-        // COD
         setTimeout(() => {
             clearCart();
+            showToast('success', 'Đặt hàng', 'Đơn hàng COD của bạn đã được ghi nhận.');
             navigate('/payment-success', { 
                 state: { 
                     orderId: `ORD-${Date.now()}`, 
@@ -63,7 +64,7 @@ const Checkout = () => {
                     method: 'Thanh toán khi nhận hàng (COD)' 
                 } 
             });
-        }, 1500);
+        }, 2000);
     }
   };
 
