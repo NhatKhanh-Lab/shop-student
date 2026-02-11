@@ -1,0 +1,24 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./App.tsx",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./context/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./services/**/*.{js,ts,jsx,tsx}"
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
+      colors: {
+        primary: '#2563EB', // Blue 600
+        secondary: '#4F46E5', // Indigo 600
+        dark: '#111827',
+      }
+    },
+  },
+  plugins: [],
+}
