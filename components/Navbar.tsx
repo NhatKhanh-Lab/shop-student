@@ -71,21 +71,23 @@ const Navbar = () => {
                   <span className="material-symbols-outlined text-[18px] text-gray-400 group-hover:rotate-180 transition-transform">expand_more</span>
                 </button>
                 
-                <div className="absolute right-0 top-full w-48 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 origin-top-right z-[100]">
-                  <div className="py-2">
-                    <div className="px-4 py-2 border-b border-gray-50 mb-1">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tài khoản</p>
+                <div className="absolute right-0 top-full pt-2 w-48 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 origin-top-right z-[100]">
+                  <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+                    <div className="py-2">
+                        <div className="px-4 py-2 border-b border-gray-50 mb-1">
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tài khoản</p>
+                        </div>
+                        <Link to="/profile" className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+                            <span className="material-symbols-outlined text-[20px]">person</span> Hồ sơ
+                        </Link>
+                        <Link to="/history" className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
+                            <span className="material-symbols-outlined text-[20px]">receipt_long</span> Đơn mua
+                        </Link>
+                        <div className="h-px bg-gray-50 my-1"></div>
+                        <button onClick={handleLogout} className="flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                            <span className="material-symbols-outlined text-[20px]">logout</span> Đăng xuất
+                        </button>
                     </div>
-                    <Link to="/profile" className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined text-[20px]">person</span> Hồ sơ
-                    </Link>
-                    <Link to="/history" className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined text-[20px]">receipt_long</span> Đơn mua
-                    </Link>
-                    <div className="h-px bg-gray-50 my-1"></div>
-                    <button onClick={handleLogout} className="flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                        <span className="material-symbols-outlined text-[20px]">logout</span> Đăng xuất
-                    </button>
                   </div>
                 </div>
               </div>
