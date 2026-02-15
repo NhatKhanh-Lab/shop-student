@@ -36,13 +36,13 @@ export const ToastProvider = ({ children }: { children?: ReactNode }) => {
         {toasts.map((toast) => (
           <div 
             key={toast.id}
-            className={`pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-2xl border min-w-[320px] max-w-[400px] animate-scale-up transition-all duration-300 ${
-              toast.type === 'success' ? 'bg-white border-green-100' :
-              toast.type === 'error' ? 'bg-white border-red-100' :
-              'bg-white border-blue-100'
+            className={`pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-2xl border min-w-[320px] max-w-[400px] animate-slide-in transition-all duration-300 ${
+              toast.type === 'success' ? 'bg-gradient-to-r from-white to-green-50 border-green-100' :
+              toast.type === 'error' ? 'bg-gradient-to-r from-white to-red-50 border-red-100' :
+              'bg-gradient-to-r from-white to-blue-50 border-blue-100'
             }`}
           >
-            <div className={`p-2 rounded-xl-flex-shrink-0 ${
+            <div className={`p-2 rounded-xl flex-shrink-0 ${
               toast.type === 'success' ? 'bg-green-50 text-green-600' :
               toast.type === 'error' ? 'bg-red-50 text-red-600' :
               'bg-blue-50 text-blue-600'
