@@ -36,20 +36,23 @@ export const ToastProvider = ({ children }: { children?: ReactNode }) => {
         {toasts.map((toast) => (
           <div 
             key={toast.id}
-            className={`pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-2xl border min-w-[320px] max-w-[400px] animate-scale-up transition-all duration-300 ${
-              toast.type === 'success' ? 'bg-white border-green-100' :
-              toast.type === 'error' ? 'bg-white border-red-100' :
-              'bg-white border-blue-100'
+            className={`pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-2xl border min-w-[320px] max-w-[400px] animate-slide-in transition-all duration-300 ${
+              toast.type === 'success' ? 'bg-gradient-to-r from-green-50 to-white border-green-100' :
+              toast.type === 'error' ? 'bg-gradient-to-r from-red-50 to-white border-red-100' :
+              toast.type === 'warning' ? 'bg-gradient-to-r from-yellow-50 to-white border-yellow-100' :
+              'bg-gradient-to-r from-blue-50 to-white border-blue-100'
             }`}
           >
-            <div className={`p-2 rounded-xl-flex-shrink-0 ${
-              toast.type === 'success' ? 'bg-green-50 text-green-600' :
-              toast.type === 'error' ? 'bg-red-50 text-red-600' :
-              'bg-blue-50 text-blue-600'
+            <div className={`p-2 rounded-xl flex-shrink-0 ${
+              toast.type === 'success' ? 'bg-green-100 text-green-600' :
+              toast.type === 'error' ? 'bg-red-100 text-red-600' :
+              toast.type === 'warning' ? 'bg-yellow-100 text-yellow-600' :
+              'bg-blue-100 text-blue-600'
             }`}>
               <span className="material-symbols-outlined">
                 {toast.type === 'success' ? 'check_circle' :
-                 toast.type === 'error' ? 'error' : 'info'}
+                 toast.type === 'error' ? 'error' :
+                 toast.type === 'warning' ? 'warning' : 'info'}
               </span>
             </div>
             <div className="flex-1">
