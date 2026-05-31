@@ -1,22 +1,22 @@
 
 import React from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { CartProvider } from './context/CartContext.tsx';
-import { AuthProvider, useAuth } from './context/AuthContext.tsx';
-import { ToastProvider } from './context/ToastContext.tsx';
-import Layout from './components/Layout.tsx';
-import Home from './pages/Home.tsx';
-import ProductList from './pages/ProductList.tsx';
-import ProductDetail from './pages/ProductDetail.tsx';
-import Cart from './pages/Cart.tsx';
-import Login from './pages/Login.tsx';
-import AdminDashboard from './pages/AdminDashboard.tsx';
-import Checkout from './pages/Checkout.tsx';
-import PaymentSuccess from './pages/PaymentSuccess.tsx';
-import OrderHistory from './pages/OrderHistory.tsx';
-import UserProfile from './pages/UserProfile.tsx';
-import AIChatbot from './components/AIChatbot.tsx';
-import { UserRole } from './types.ts';
+import { CartProvider } from './context/CartContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import ProductList from './pages/ProductList';
+import ProductDetail from './pages/ProductDetail';
+import Cart from './pages/Cart';
+import Login from './pages/Login';
+import AdminDashboard from './pages/AdminDashboard';
+import Checkout from './pages/Checkout';
+import PaymentSuccess from './pages/PaymentSuccess';
+import OrderHistory from './pages/OrderHistory';
+import UserProfile from './pages/UserProfile';
+import AIChatbot from './components/AIChatbot';
+import { UserRole } from './types';
 
 // Protected Route for Admin - Fix: Make children optional to avoid missing prop error in some TS environments
 const ProtectedRoute = ({ children }: { children?: React.ReactNode }) => {
