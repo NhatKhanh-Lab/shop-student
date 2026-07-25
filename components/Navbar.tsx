@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext.tsx';
-import { useAuth } from '../context/AuthContext.tsx';
-import { useToast } from '../context/ToastContext.tsx';
-import { UserRole } from '../types.ts';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
+import { UserRole } from '../types';
 
 const Navbar = () => {
   const { cartCount } = useCart();
