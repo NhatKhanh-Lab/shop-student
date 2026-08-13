@@ -1,7 +1,7 @@
 import { Product, User, UserRole, Order, OrderStatus } from './types';
 
 // Mock Users
-// Fix: Use string IDs for users as defined in types.ts
+// Fix: Use string IDs for users as defined in types
 export const MOCK_USERS: User[] = [
   { id: '1', name: 'Nguyễn Văn Admin', email: 'admin@shop.com', role: UserRole.ADMIN, avatar: 'https://i.pravatar.cc/150?u=admin' },
   { id: '2', name: 'Trần Sinh Viên', email: 'user@shop.com', role: UserRole.USER, avatar: 'https://i.pravatar.cc/150?u=student' }
