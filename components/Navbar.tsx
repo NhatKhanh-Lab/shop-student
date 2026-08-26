@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext.tsx';
-import { useAuth } from '../context/AuthContext.tsx';
-import { useToast } from '../context/ToastContext.tsx';
-import { UserRole } from '../types.ts';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
+import { UserRole } from '../types';
 
 const Navbar = () => {
   const { cartCount } = useCart();
@@ -71,8 +71,8 @@ const Navbar = () => {
                   <span className="material-symbols-outlined text-[18px] text-gray-400 group-hover:rotate-180 transition-transform">expand_more</span>
                 </button>
                 
-                <div className="absolute right-0 top-full w-48 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 origin-top-right z-[100]">
-                  <div className="py-2">
+                <div className="absolute right-0 top-full w-48 pt-2 invisible opacity-0 scale-95 group-hover:visible group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-right z-[100]">
+                  <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden py-2">
                     <div className="px-4 py-2 border-b border-gray-50 mb-1">
                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tài khoản</p>
                     </div>
