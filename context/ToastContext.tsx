@@ -42,7 +42,7 @@ export const ToastProvider = ({ children }: { children?: ReactNode }) => {
               'bg-white border-blue-100'
             }`}
           >
-            <div className={`p-2 rounded-xl-flex-shrink-0 ${
+            <div className={`p-2 rounded-xl flex-shrink-0 ${
               toast.type === 'success' ? 'bg-green-50 text-green-600' :
               toast.type === 'error' ? 'bg-red-50 text-red-600' :
               'bg-blue-50 text-blue-600'
